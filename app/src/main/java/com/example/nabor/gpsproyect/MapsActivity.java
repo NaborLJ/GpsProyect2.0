@@ -1,5 +1,6 @@
 package com.example.nabor.gpsproyect;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -26,12 +27,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
-
-    private GoogleMap mMap;
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,GoogleMap.OnMapLongClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
+    public final static int CODE=1;
     public static final int LOCATION_REQUEST_CODE = 1;
     private GoogleMap gMap;
-    public static double auxLat =42.237701;
+    public static double auxLat = 42.237701;
     public static double auxLng = -8.714187;
     CircleOptions circle;
     public static Marker mark;
@@ -57,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Si la localización gps está activada, cargará el mapa y creará el area y la marca en su interior
+     *
      * @param googleMap
      */
     @Override
@@ -64,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         instrucciones();
         gMap = googleMap;
         gMap.setOnMapClickListener(this);
+        gMap.setOnMapLongClickListener(this);
         LatLng marcaBusqueda = new LatLng(auxLat, auxLng);
         mark = gMap.addMarker(new MarkerOptions().position(marcaBusqueda).title("Marca").snippet("Marca Buscada"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(marcaBusqueda));
@@ -99,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Responderá a click en el mapa, localizará/actualizará nuestra posición / Futuramente mostrará la distancia cara la marca.
+     *
      * @param latLng
      */
     @Override
@@ -116,6 +119,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Petición de permisos para poder acceder a la localización.
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -147,46 +151,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         double earthRadius = 6372.795477598;
 
-        double distLaten = Math.toRadians(latencia- auxLat);
-        double distLong = Math.toRadians(longitud- auxLng);
-        double a = Math.sin(distLaten/2) * Math.sin(distLaten/2) +
+        double distLaten = Math.toRadians(latencia - auxLat);
+        double distLong = Math.toRadians(longitud - auxLng);
+        double a = Math.sin(distLaten / 2) * Math.sin(distLaten / 2) +
                 Math.cos(Math.toRadians(auxLat)) * Math.cos(Math.toRadians(latencia)) *
-                        Math.sin(distLong/2) * Math.sin(distLong/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        Math.sin(distLong / 2) * Math.sin(distLong / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double dist = earthRadius * c;
-        double distMark=dist*1000;
-        String distancia=String.valueOf(distMark);
+        double distMark = dist * 1000;
+        String distancia = String.valueOf(distMark);
 
-        Toast.makeText(this, distancia+" metros hasta la marca", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, distancia + " metros hasta la marca", Toast.LENGTH_LONG).show();
 
-        if(distMark>=150){
+        if (distMark >= 150) {
             circle.strokeColor(Color.parseColor("#DF0C0C"));
             mark.setVisible(false);
         }
-        if (distMark>=100  && distMark < 150.00){
+        if (distMark >= 100 && distMark < 150.00) {
             circle.strokeColor(Color.parseColor("#F0973F"));
         }
-        if(distMark <70 && distMark > 50){
+        if (distMark < 70 && distMark > 50) {
             circle.strokeColor(Color.parseColor("#F4F41E"));
 
         }
-        if(distMark<50 && distMark >20){
+        if (distMark < 50 && distMark > 20) {
             circle.strokeColor(Color.parseColor("#3BFA21"));
         }
-        if(distMark<=20){
+        if (distMark <= 20) {
             mark.setVisible(true);
         }
 
     }
+
     /**
      * Obtiene la latitud y la longitud
+     *
      * @param loc
      */
     private void updateUI(Location loc) {
 
         if (loc != null) {
-            latencia=loc.getLatitude();
-            longitud=loc.getLongitude();
+            latencia = loc.getLatitude();
+            longitud = loc.getLongitude();
 
         } else {
 
@@ -199,6 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Metodos obligatorios implementados
+     *
      * @param bundle
      */
     @Override
@@ -232,20 +239,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Contiene unas breves instrucciones sobre el objetivo del juego
      */
-    public void instrucciones(){
+    public void instrucciones() {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
         build.setTitle("Busca la marca");
         build.setMessage(instruccioes);
-        build.setPositiveButton("Aceptar",null);
+        build.setPositiveButton("Aceptar", null);
         build.create();
         build.show();
     }
-    public String instruccioes="Bienvenido.Preparate para buscar la marca escondida.\n" +
+
+    public String instruccioes = "Bienvenido.Preparate para buscar la marca escondida.\n" +
             ".- Para empezar deberás activar la localización gps (en caso de no tenerla activada).\n" +
             ".- Se mostrará un circulo azul, esa será el área que delimitará la zona de busqueda.\n" +
             ".- Pulsando una vez en la pantalla se mostrará la distancia hasta la marca.\n" +
             ".- Cuando estes a menos de 20 metros aparecerá un circulo menor que mostrará el area concreto de la marca.\n" +
             "Buena suerte en la búsqueda,jugador.";
-}
 
+
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        Intent intent = new Intent(MapsActivity.this, QRActivity.class);
+        startActivityForResult(intent,CODE);
+    }
+}
 
