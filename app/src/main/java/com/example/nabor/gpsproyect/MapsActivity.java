@@ -176,6 +176,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
+     * Obtiene la latitud y la longitud
+     * @param loc
+     */
+    private void updateUI(Location loc) {
+
+        if (loc != null) {
+            latencia=loc.getLatitude();
+            longitud=loc.getLongitude();
+
+        } else {
+
+            Toast.makeText(this, "Latitud y Longitud desconocidas", Toast.LENGTH_LONG).show();
+
+        }
+
+
+    }
+
+    /**
      * Metodos obligatorios implementados
      * @param bundle
      */
