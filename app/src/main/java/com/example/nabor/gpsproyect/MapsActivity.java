@@ -139,6 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
     /**
      * Calcula la distancia hasta la marca desde la posición actual / Futuramente implementado en onMapClick
      */
@@ -177,7 +178,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
-
     /**
      * Obtiene la latitud y la longitud
      * @param loc
