@@ -2,11 +2,15 @@ package com.example.nabor.gpsproyect;
 
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,7 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
 
     private GoogleMap mMap;
     public static final int LOCATION_REQUEST_CODE = 1;
@@ -45,6 +49,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API)
                 .build();
     }
+
+    /**
+     * Si la localización gps está activada, cargará el mapa y creará el area y la marca en su interior
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -83,4 +92,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Responderá a click en el mapa, localizará/actualizará nuestra posición / Futuramente mostrará la distancia cara la marca.
+     * @param latLng
+     */
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+
+
+
+    }
+
+    /**
+     * Metodos obligatorios implementados
+     * @param bundle
+     */
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
