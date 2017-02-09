@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -226,4 +227,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.e(LOGTAG, "Error de conexión con Google Play Services");
     }
+
+    /**
+     * Contiene unas breves instrucciones sobre el objetivo del juego
+     */
+    public void instrucciones(){
+        AlertDialog.Builder build = new AlertDialog.Builder(this);
+        build.setTitle("Busca la marca");
+        build.setMessage(instruccioes);
+        build.setPositiveButton("Aceptar",null);
+        build.create();
+        build.show();
+    }
+    public String instruccioes="Bienvenido.Preparate para buscar la marca escondida.\n" +
+            ".- Para empezar deberás activar la localización gps (en caso de no tenerla activada).\n" +
+            ".- Se mostrará un circulo azul, esa será el área que delimitará la zona de busqueda.\n" +
+            ".- Pulsando una vez en la pantalla se mostrará la distancia hasta la marca.\n" +
+            ".- Cuando estes a menos de 20 metros aparecerá un circulo menor que mostrará el area concreto de la marca.\n" +
+            "Buena suerte en la búsqueda,jugador.";
+}
+
 }
