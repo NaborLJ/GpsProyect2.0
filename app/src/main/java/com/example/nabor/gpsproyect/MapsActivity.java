@@ -61,7 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        instrucciones();
         gMap = googleMap;
         gMap.setOnMapClickListener(this);
         LatLng marcaBusqueda = new LatLng(auxLat, auxLng);
@@ -108,7 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
-
+        updateUI(lastLocation);
+        calcDistanciaMarca();
 
 
     }
@@ -247,4 +248,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             "Buena suerte en la búsqueda,jugador.";
 }
 
-}
+
