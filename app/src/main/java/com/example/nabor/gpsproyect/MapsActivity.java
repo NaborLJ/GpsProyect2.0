@@ -36,6 +36,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng center = new LatLng(42.237701, -8.714187);
     int radio = 100;
     private GoogleApiClient apiClient;
+    public static double latencia, longitud;
+    private static final String LOGTAG = "android-localizacion";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +134,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }
+    }
+
+    /**
+     * Calcula la distancia hasta la marca desde la posición actual / Futuramente implementado en onMapClick
+     */
+    public void calcDistanciaMarca() {
+
+        double earthRadius = 6372.795477598;
+
+        double distLaten = Math.toRadians(latencia- auxLat);
+        double distLong = Math.toRadians(longitud- auxLng);
+        double a = Math.sin(distLaten/2) * Math.sin(distLaten/2) +
+                Math.cos(Math.toRadians(auxLat)) * Math.cos(Math.toRadians(latencia)) *
+                        Math.sin(distLong/2) * Math.sin(distLong/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = earthRadius * c;
+        double distMark=dist*1000;
+        String distancia=String.valueOf(distMark);
+
+        Toast.makeText(this, distancia+" metros hasta la marca", Toast.LENGTH_LONG).show();
+
+        if(distMark>=150){
+            circle.strokeColor(Color.parseColor("#DF0C0C"));
+            mark.setVisible(false);
+        }
+        if (distMark>=100  && distMark < 150.00){
+            circle.strokeColor(Color.parseColor("#F0973F"));
+        }
+        if(distMark <70 && distMark > 50){
+            circle.strokeColor(Color.parseColor("#F4F41E"));
+
+        }
+        if(distMark<50 && distMark >20){
+            circle.strokeColor(Color.parseColor("#3BFA21"));
+        }
+        if(distMark<=20){
+            mark.setVisible(true);
+        }
+
     }
 
     /**
